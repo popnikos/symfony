@@ -642,7 +642,6 @@ class FormValidatorTest extends ConstraintValidatorTestCase
         $this->buildViolation('Extra!')
             ->setParameter('{{ extra_fields }}', '"foo"')
             ->setInvalidValue(['foo' => 'bar'])
-            ->setPlural(1)
             ->setCode(Form::NO_SUCH_FIELD_ERROR)
             ->assertRaised();
     }
@@ -663,29 +662,6 @@ class FormValidatorTest extends ConstraintValidatorTestCase
 
         $this->buildViolation('Extra!')
             ->setParameter('{{ extra_fields }}', '"foo", "baz", "quux"')
-            ->setPlural(1)
-            ->setInvalidValue(['foo' => 'bar', 'baz' => 'qux', 'quux' => 'quuz'])
-            ->setCode(Form::NO_SUCH_FIELD_ERROR)
-            ->assertRaised();
-    }
-    
-    public function testViolationFormatIfMultipleExtraFieldsWithPluralMessage()
-    {
-        $form = $this->getBuilder('parent', null, ['extra_fields_message' => 'Extra!'])
-            ->setCompound(true)
-            ->setDataMapper(new PropertyPathMapper())
-            ->add($this->getBuilder('child'))
-            ->getForm();
-
-        $form->submit(['foo' => 'bar', 'baz' => 'qux', 'quux' => 'quuz']);
-
-        $this->expectNoValidate();
-
-        $this->validator->validate($form, new Form());
-
-        $this->buildViolation('Extra!')
-            ->setParameter('{{ extra_fields }}', '"foo", "baz", "quux"')
-            ->setPlural(3)
             ->setInvalidValue(['foo' => 'bar', 'baz' => 'qux', 'quux' => 'quuz'])
             ->setCode(Form::NO_SUCH_FIELD_ERROR)
             ->assertRaised();
